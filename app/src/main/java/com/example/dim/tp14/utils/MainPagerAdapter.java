@@ -9,19 +9,19 @@ import com.example.dim.tp14.MainActivity;
 
 import java.util.HashMap;
 
-public class TpPagerAdapter extends FragmentPagerAdapter {
+public class MainPagerAdapter extends FragmentPagerAdapter {
 
     private static final String PAGE_MOTS = "PAGE_MOTS";
     private static final String PAGE_DEFS = "PAGE_DEFS";
     private static final String PAGE_SEL = "PAGE_SEL";
 
-    private int currentPage;
+    private boolean delMod;
     private HashMap<Integer, Fragment> fragments;
 
-    public TpPagerAdapter(FragmentManager fm, MainActivity activity, HashMap<Integer, Fragment> fragments) {
+    public MainPagerAdapter(FragmentManager fm, MainActivity activity, HashMap<Integer, Fragment> fragments) {
         super(fm);
         this.fragments = fragments;
-        currentPage = 0;
+        delMod = false;
     }
 
 
@@ -33,6 +33,14 @@ public class TpPagerAdapter extends FragmentPagerAdapter {
 
         String objClass = object.getClass().getSimpleName();
 
+        if (delMod) {
+            if (objClass.equalsIgnoreCase("WordsFragment")) {
+                return 0;
+            } else {
+                return POSITION_NONE;
+            }
+        }
+
         if (objClass.equalsIgnoreCase("WordsFragment")) {
             return 0;
         }
@@ -42,20 +50,24 @@ public class TpPagerAdapter extends FragmentPagerAdapter {
         if (objClass.equalsIgnoreCase("SelectedFragment")) {
             return 2;
         }
+
         Log.i("TEST", "getItemPosition: POSITION_NONE !!!!!!!!");
         return POSITION_NONE;
     }
 
     @Override
     public Fragment getItem(int position) {
-        currentPage = position;
         return fragments.get(position);
 
     }
 
+    /**
+     * Returns 3 pages or 1 only if deletion Mode is active
+     * @return
+     */
     @Override
     public int getCount() {
-        return 3;
+        return delMod ? 1 : 3;
     }
 
     @Override
@@ -65,5 +77,12 @@ public class TpPagerAdapter extends FragmentPagerAdapter {
                         "Selection";
     }
 
+    public boolean isDelMod() {
+        return delMod;
+    }
+
+    public void setDelMod(boolean delMod) {
+        this.delMod = delMod;
+    }
 }
 

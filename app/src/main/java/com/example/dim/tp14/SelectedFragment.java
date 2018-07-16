@@ -9,45 +9,34 @@ import android.widget.TextView;
 
 public class SelectedFragment extends Fragment {
 
-    private static final String ARG_SELECTED = "ARG_SELECTED";
-    private static final String ARG_TYPE = "ARG_TYPE";
-
-    private String selected;
-    private boolean definition;
+    private TextView selected;
+    private TextView title;
 
     public SelectedFragment() {
         // Required empty public constructor
     }
 
-    public static SelectedFragment newInstance(String selected, boolean definition) {
+    public static SelectedFragment newInstance() {
         SelectedFragment fragment = new SelectedFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_SELECTED, selected);
-        args.putBoolean(ARG_TYPE, definition);
-        fragment.setArguments(args);
+        fragment.setArguments(new Bundle());
         return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            selected = getArguments().getString(ARG_SELECTED);
-            definition = getArguments().getBoolean(ARG_TYPE);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_selected, container, false);
-        TextView tv = view.findViewById(R.id.selected_text);
-
-        boolean valid = selected != null && !selected.isEmpty();
-        tv.setText(valid ? selected : "");
+        selected = view.findViewById(R.id.selected_text);
+        title = view.findViewById(R.id.selected_title);
 
         return view;
     }
 
+    public void updateFragment(String item, boolean word) {
+
+            title.setText(word ? "Word" : "Definition");
+            selected.setText(item);
+
+    }
 
 }

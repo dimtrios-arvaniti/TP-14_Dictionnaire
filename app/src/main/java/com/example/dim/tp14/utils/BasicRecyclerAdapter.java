@@ -49,7 +49,7 @@ public class BasicRecyclerAdapter<T extends TabInterface> extends RecyclerView.A
         String item = parent.getItems().get(position);
         Log.i("TEST", "onBindViewHolder: " + item);
         holder.vhLabel.setText(item);
-        holder.vhLayout.setTag(parent.getTitle()+"_" + position);
+        holder.vhLayout.setTag(parent.getTitle()+"_" + item);
     }
 
     @Override

@@ -6,10 +6,15 @@
     <string name="nav_drawer_close">Fermé</string>
     <string name="cancel">Annuler</string>
     <string name="confirm">Confirmer</string>
+    <string name="dialog_title_quit">QUITTER</string>
+    <string name="dialog_message_quit">Etes-vous sûr de voulour quitter ?</string>
+    <string name="dialog_title_del">SUPPRIMER</string>
+    <string name="dialog_message_del">Etes-vous sûr de voulour supprimer l\'element </string>
     <string name="dialog_title_add">AJOUTER</string>
-    <string name="dialog_message_save">Voulez-vous sauvegarder ?</string>
+    <string name="dialog_message_save">Ajuter un élément au dictionnaire ?</string>
     <string name="word">Mot</string>
     <string name="dictionnary">Dictionnaire</string>
+    <string name="deletion">Suppression</string>
     <string name="definition">Definition</string>
     <string name="all_fields_required">Tout les champs doivent êtres remplis !</string>
     <string name="already_exists">Ce mot existe déjà dans le dictionnaire !</string>

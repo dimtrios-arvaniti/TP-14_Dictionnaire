@@ -18,7 +18,7 @@ import com.example.dim.tp14.utils.TabListActionInterface;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefinitionsFragment extends Fragment implements TabInterface{
+public class DefinitionsFragment extends Fragment implements TabInterface {
 
     private static final String ARG_ITEM_ = "ARG_ITEM_";
     private static final String ARG_COUNT = "ARG_COUNT";
@@ -45,12 +45,13 @@ public class DefinitionsFragment extends Fragment implements TabInterface{
 
         int dcount = 0;
         for (String definition : definitions) {
-            args.putString((ARG_ITEM_+dcount), definition);
-            dcount +=1;
+            args.putString((ARG_ITEM_ + dcount), definition);
+            dcount += 1;
         }
         fragment.setArguments(args);
         return fragment;
     }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -88,6 +89,27 @@ public class DefinitionsFragment extends Fragment implements TabInterface{
     }
 
     @Override
+    public void updateTab(String item, boolean delete) {
+        if (delete) {
+            int pos = items.indexOf(item);
+            items.remove(item);
+            adapter.notifyItemRemoved(pos);
+
+        } else {
+            items.add(item);
+            adapter.notifyItemInserted(getItems().size() - 1);
+        }
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public ArrayList<String> getItems() {
+        return items;
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof TabListActionInterface) {
@@ -102,17 +124,5 @@ public class DefinitionsFragment extends Fragment implements TabInterface{
     public void onDetach() {
         super.onDetach();
         listener = null;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public ArrayList<String> getItems() {
-        return items;
-    }
-
-    public int getCount() {
-        return count;
     }
 }

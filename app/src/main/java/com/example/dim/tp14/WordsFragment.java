@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,11 +40,9 @@ public class WordsFragment extends Fragment implements TabInterface {
         WordsFragment fragment = new WordsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_MOTS_TITLE, title);
-        Log.i("TEST", "newInstance: WORDS COUNT = " + mots.size());
 
         int dcount = 0;
         for (String mot : mots) {
-            Log.i("TEST", "newInstance: " + mot);
             args.putString((ARG_ITEM_ + dcount), mot);
             dcount += 1;
         }
@@ -59,7 +56,6 @@ public class WordsFragment extends Fragment implements TabInterface {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_mots, container, false);
-        //View view = super.onCreateView(inflater, container, savedInstanceState);
 
         recyclerView = view.findViewById(R.id.mots_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -80,16 +76,35 @@ public class WordsFragment extends Fragment implements TabInterface {
 
         title = getArguments().getString(ARG_MOTS_TITLE);
         count = getArguments().getInt(ARG_COUNT);
-        //Log.i("TEST", "onCreate: COUNT = " + count);
 
         // make data from bundle
         if (count > 0) {
             for (int i = 0; i < count; i++) {
                 String string = getArguments().getString(ARG_ITEM_ + i);
-                //Log.i("TEST", "onCreate: WORD ITEM " + string);
                 items.add(string);
             }
         }
+    }
+
+    @Override
+    public void updateTab(String item, boolean delete) {
+        if (delete) {
+            int pos = items.indexOf(item);
+            items.remove(item);
+            adapter.notifyItemRemoved(pos);
+
+        } else {
+            items.add(item);
+            adapter.notifyItemInserted(getItems().size() - 1);
+        }
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public ArrayList<String> getItems() {
+        return items;
     }
 
     @Override
@@ -108,13 +123,4 @@ public class WordsFragment extends Fragment implements TabInterface {
         super.onDetach();
         listener = null;
     }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public ArrayList<String> getItems() {
-        return items;
-    }
-
 }

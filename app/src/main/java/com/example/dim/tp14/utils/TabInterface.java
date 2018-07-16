@@ -7,4 +7,6 @@ public interface TabInterface {
     void onItemSelected(String item);
     List<String> getItems();
     String getTitle();
+    void updateTab(String item, boolean delete);
+
 }
