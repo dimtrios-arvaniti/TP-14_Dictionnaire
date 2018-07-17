@@ -5,8 +5,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 
-import com.example.dim.tp14.MainActivity;
-
 import java.util.HashMap;
 
 public class MainPagerAdapter extends FragmentPagerAdapter {
@@ -18,7 +16,7 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
     private boolean delMod;
     private HashMap<Integer, Fragment> fragments;
 
-    public MainPagerAdapter(FragmentManager fm, MainActivity activity, HashMap<Integer, Fragment> fragments) {
+    public MainPagerAdapter(FragmentManager fm, HashMap<Integer, Fragment> fragments) {
         super(fm);
         this.fragments = fragments;
         delMod = false;

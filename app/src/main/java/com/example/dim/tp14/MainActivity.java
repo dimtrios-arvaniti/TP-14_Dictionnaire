@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
 
     // setting view pager and view pager adapter
     private void initViewPager() {
-        pagerAdapter = new MainPagerAdapter(getSupportFragmentManager(), MainActivity.this, fragments);
+        pagerAdapter = new MainPagerAdapter(getSupportFragmentManager(), fragments);
 
         mViewPager = findViewById(R.id.view_pager);
         mViewPager.setAdapter(pagerAdapter);
@@ -350,11 +350,11 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
                         //update view
                         wordsFragment.updateTab(delKey, true);
                         definitionsFragment.updateTab(def, true);
-
-
                     }
                 }).create();
     }
+
+
 
     private Toolbar initToolbar() {
         // set toolbar as actionBar
@@ -381,6 +381,7 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
+
             return true;
         }
 
