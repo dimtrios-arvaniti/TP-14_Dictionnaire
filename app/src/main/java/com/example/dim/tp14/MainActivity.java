@@ -216,15 +216,13 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
             pagerAdapter.notifyDataSetChanged();
             getSupportActionBar().setTitle(R.string.dictionnary);
         } else {
-            // TODO: handle tabs
             if (curentPage > 0) {
                 curentPage -=1;
                 mViewPager.setCurrentItem(curentPage);
                 pagerAdapter.notifyDataSetChanged();
             } else {
-                AlertDialog dialog = makeQuitDialog();
+                makeQuitDialog().show();
             }
-            //super.onBackPressed();
         }
 
     }
@@ -294,6 +292,7 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
         return new Builder(new ContextThemeWrapper(MainActivity.this,
                 R.style.AppTheme_Dialog))
                 .setTitle(R.string.dialog_title_quit)
+                .setMessage(R.string.dialog_message_del)
                 .setNegativeButton(R.string.cancel, null)
                 .setPositiveButton(R.string.confirm, new OnClickListener() {
                     @Override
@@ -398,7 +397,7 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
      * where <b>title</b> is the Fragment name </br>
      * and <b>pos</b> the position of the item in the list </br>
      *
-     * @param item String - Tag of the view
+     * @param item String - Tag of the clicked item
      */
     @Override
     public void onItemClick(String item) {
