@@ -88,7 +88,9 @@ public class BasicRecyclerAdapter<T extends TabInterface> extends RecyclerView.A
             vhLabel = view.findViewById(R.id.itemText);
             vhLayout = view.findViewById(R.id.itemLayout);
             vhLayout.setOnClickListener(onClickListener);
-            vhLayout.setOnLongClickListener(onLongClickListener);
+            if (parent.isAdminMode()) {
+                vhLayout.setOnLongClickListener(onLongClickListener);
+            }
         }
     }
 
