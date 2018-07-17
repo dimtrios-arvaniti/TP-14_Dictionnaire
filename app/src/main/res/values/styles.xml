@@ -3,11 +3,7 @@
 <resources>
 
     <!-- Base application theme. -->
-
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-
-        <!-- Customize your theme here. -->
-
 
         <item name="colorPrimary">@color/colorPrimary</item>
 
@@ -17,19 +13,13 @@
 
     </style>
 
-
     <style name="NoWindowActionBar" parent="AppTheme.NoActionBar">
-
         <item name="windowActionBar">false</item>
 
     </style>
 
 
     <style name="AppTheme.Dialog" parent="AppTheme.NoActionBar">
-
-        <!--<item name="android:windowNoTitle">true</item>-->
-
-
     </style>
 
 
@@ -39,6 +29,7 @@
 
         <item name="windowNoTitle">true</item>
 
+        <item name="windowActionModeOverlay">true</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>

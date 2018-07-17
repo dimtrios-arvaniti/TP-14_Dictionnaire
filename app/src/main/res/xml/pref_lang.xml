@@ -12,5 +12,11 @@
         android:positiveButtonText="@null"
         android:title="@string/action_settings"/>
 
+    <CheckBoxPreference
+        android:summaryOn="@string/setting_activated"
+        android:summaryOff="@string/settings_inactive"
+        android:text="@string/settings_admin"
+        android:key="adn"/>
+
 
 </PreferenceScreen>

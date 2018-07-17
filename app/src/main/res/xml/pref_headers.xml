@@ -4,6 +4,6 @@
     <header
         android:fragment="com.example.dim.tp14.PreferencesActivity$LanguagePreferenceFragment"
         android:icon="@drawable/ic_flag_black_24dp"
-        android:title="@string/preferences_lang"/>
+        android:title="@string/pref_general"/>
 
 </preference-headers>

@@ -2,9 +2,11 @@ package com.example.dim.tp14;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,8 +25,10 @@ public class WordsFragment extends Fragment implements TabInterface {
     private static final String ARG_COUNT = "ARG_COUNT";
     private static final String ARG_ITEM_ = "ARG_ITEM_";
     private static final String ARG_MOTS_TITLE = "MOTS";
+    private static final String ARG_ADMIN_MODE = "ARG_ADMIN_MODE";
 
     private String title;
+    private boolean adminMode;
     private int count;
     private ArrayList<String> items;
     private TabListActionInterface listener;
@@ -36,10 +40,11 @@ public class WordsFragment extends Fragment implements TabInterface {
         // Required empty public constructor
     }
 
-    public static WordsFragment newInstance(List<String> mots, String title) {
+    public static WordsFragment newInstance(List<String> mots, String title, boolean asAdmin) {
         WordsFragment fragment = new WordsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_MOTS_TITLE, title);
+        args.putBoolean(ARG_ADMIN_MODE, asAdmin);
 
         int dcount = 0;
         for (String mot : mots) {
@@ -68,14 +73,25 @@ public class WordsFragment extends Fragment implements TabInterface {
     }
 
     @Override
+    public void onLongItemClick(String item) {
+        listener.onLongItemClick(item);
+    }
+
+    @Override
+    public void onLongItemActionClick(ActionMode mode, boolean delete) {
+        listener.onLongItemActionClick(mode, delete);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // init
         items = new ArrayList<>();
         adapter = new BasicRecyclerAdapter(this);
 
-        title = getArguments().getString(ARG_MOTS_TITLE);
-        count = getArguments().getInt(ARG_COUNT);
+        title = getArguments().getString(ARG_MOTS_TITLE, "");
+        count = getArguments().getInt(ARG_COUNT, 0);
+        adminMode = getArguments().getBoolean(ARG_ADMIN_MODE, false);
 
         // make data from bundle
         if (count > 0) {
@@ -99,8 +115,20 @@ public class WordsFragment extends Fragment implements TabInterface {
         }
     }
 
+    @Override
+    public ActionMode startActionMode(ActionMode.Callback callback) {
+        //((MainActivity) getActivity()).getSupportActionBar().collapseActionView();
+        return ((MainActivity) getActivity()).startSupportActionMode(callback);
+    }
+
     public String getTitle() {
         return title;
+    }
+
+    @Override
+    public boolean isAdminMode() {
+        return PreferenceManager.getDefaultSharedPreferences(getContext())
+                .getBoolean("adn", false);
     }
 
     public ArrayList<String> getItems() {

@@ -9,10 +9,6 @@ import java.util.HashMap;
 
 public class MainPagerAdapter extends FragmentPagerAdapter {
 
-    private static final String PAGE_MOTS = "PAGE_MOTS";
-    private static final String PAGE_DEFS = "PAGE_DEFS";
-    private static final String PAGE_SEL = "PAGE_SEL";
-
     private boolean delMod;
     private HashMap<Integer, Fragment> fragments;
     private String[] titles;

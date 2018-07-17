@@ -2,9 +2,12 @@ package com.example.dim.tp14;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.view.ActionMode;
+import android.support.v7.view.ActionMode.Callback;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -69,6 +72,16 @@ public class DefinitionsFragment extends Fragment implements TabInterface {
     }
 
     @Override
+    public void onLongItemClick(String item) {
+        listener.onLongItemClick(item);
+    }
+
+    @Override
+    public void onLongItemActionClick(ActionMode mode, boolean delete) {
+        listener.onLongItemActionClick(mode, delete);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // init
@@ -99,6 +112,17 @@ public class DefinitionsFragment extends Fragment implements TabInterface {
             items.add(item);
             adapter.notifyItemInserted(getItems().size() - 1);
         }
+    }
+
+    @Override
+    public boolean isAdminMode() {
+        return PreferenceManager.getDefaultSharedPreferences(getContext())
+                .getBoolean("adn", false);
+    }
+
+    @Override
+    public ActionMode startActionMode(Callback callback) {
+        return ((MainActivity) getActivity()).startSupportActionMode(callback);
     }
 
     public String getTitle() {

@@ -36,4 +36,9 @@
         <item>fr</item>
         <item>en</item>
     </string-array>
+    <string name="setting_activated">Enabled</string>
+    <string name="settings_inactive">Disabled</string>
+    <string name="settings_admin">As admin</string>
+    <string name="menu_detail">Select</string>
+    <string name="pref_general">General</string>
 </resources>

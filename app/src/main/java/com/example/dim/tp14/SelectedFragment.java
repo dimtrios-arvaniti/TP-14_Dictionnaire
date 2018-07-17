@@ -46,8 +46,8 @@ public class SelectedFragment extends Fragment {
         itemTitle = word ? "Word" : "Definition";
         itemValue = item;
 
-        title.setText(itemValue);
-        selected.setText(itemTitle);
+        title.setText(itemTitle);
+        selected.setText(itemValue);
 
     }
 

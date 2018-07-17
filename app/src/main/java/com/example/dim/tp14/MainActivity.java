@@ -21,6 +21,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.LinearLayoutCompat.LayoutParams;
 import android.support.v7.widget.Toolbar;
@@ -69,23 +70,18 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
     private int curentPage;
     private String delKey;
 
+    // context menu selection
+    private String[] ctxSelection;
+    // context menu mode
+    private ActionMode actionMode;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.i("TEST", "onCreate: " + Locale.getDefault().getDisplayLanguage());
-        String pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-                .getString("lang", "fr");
-        Log.i("TEST", "onCreate: " + pref);
-        // init local only once
-        if (!Locale.getDefault().getDisplayLanguage().toLowerCase().contains(pref)) {
-            initLocale(pref.contains("fr") ? Locale.FRENCH // french
-                    : pref.contains("en") ? Locale.ENGLISH // english
-                    : Locale.FRENCH); // default
-        }
-
+        initLocale();
 
         // toolbar & menu
         Toolbar toolbar = initToolbar();
@@ -106,6 +102,19 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
 
     }
 
+    private void initLocale() {
+        Log.i("TEST", "onCreate: " + Locale.getDefault().getDisplayLanguage());
+        String pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                .getString("lang", "fr");
+        Log.i("TEST", "onCreate: " + pref);
+        // init local only if different from prefs one, or loooooooop...
+        if (!Locale.getDefault().getDisplayLanguage().toLowerCase().contains(pref)) {
+            changeLocale(pref.contains("fr") ? Locale.FRENCH // french
+                    : pref.contains("en") ? Locale.ENGLISH // english
+                    : Locale.FRENCH); // default
+        }
+    }
+
     // setting view pager and view pager adapter
     private void initViewPager() {
         String[] titles = new String[]{getResources().getString(R.string.words_title),
@@ -123,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
         titleStrip.setBackgroundColor(getResources().getColor(R.color.myPrimaryDarkColor));
     }
 
-    private void initLocale(Locale french) {
+    private void changeLocale(Locale french) {
         Configuration config = getResources().getConfiguration();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -143,7 +152,9 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
 
     private void initFragments() {
         // init fragments
-        wordsFragment = WordsFragment.newInstance(new ArrayList<String>(dataMap.keySet()), ARG_MOTS_TITLE);
+        wordsFragment = WordsFragment.newInstance(new ArrayList<String>(dataMap.keySet()),
+                ARG_MOTS_TITLE, PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                        .getBoolean("adn", false));
         definitionsFragment = DefinitionsFragment.newInstance(new ArrayList<String>(dataMap.values()), ARG_DEFS_TITLE);
         selectedFragment = SelectedFragment.newInstance();
 
@@ -246,6 +257,10 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
         @Override
         public void onPageSelected(int position) {
             curentPage = position;
+            if (actionMode != null) {
+                actionMode.finish();
+                actionMode = null;
+            }
         }
     };
 
@@ -299,6 +314,13 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
                         }
 
                         if (dataMap.keySet().contains(newWordEdit.getText().toString())) {
+                            Toast.makeText(MainActivity.this,
+                                    R.string.already_exists,
+                                    Toast.LENGTH_SHORT).show();
+                            invalid = true;
+                        }
+
+                        if (dataMap.values().contains(newDefinitionEdit.getText().toString())) {
                             Toast.makeText(MainActivity.this,
                                     R.string.already_exists,
                                     Toast.LENGTH_SHORT).show();
@@ -389,10 +411,25 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
                         //update view
                         wordsFragment.updateTab(delKey, true);
                         definitionsFragment.updateTab(def, true);
+
+                        // end pagerDelMode
+                        // remove this block to stay in delete mode
+                        if (pagerAdapter.isDelMod()) {
+                            pagerAdapter.setDelMod(false);
+                            pagerAdapter.notifyDataSetChanged();
+                            getSupportActionBar().setTitle(R.string.dictionnary);
+                        }
+
+
+                        // end actionMode if activated
+                        if (actionMode != null) {
+                            actionMode.finish();
+                            actionMode = null;
+                        }
+
                     }
                 }).create();
     }
-
 
     private Toolbar initToolbar() {
         // set toolbar as actionBar
@@ -466,6 +503,57 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
             }
             selectedFragment.updateFragment(key, true);
             pagerAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onLongItemClick(String item) {
+        //ctxSelection = new String[2];
+        ctxSelection = item.split("_", 2);
+    }
+
+    @Override
+    public void onLongItemActionClick(ActionMode mode, boolean delete) {
+        actionMode = mode;
+
+        if (ctxSelection[0].equalsIgnoreCase(ARG_MOTS_TITLE)) {
+            if (delete) {
+                delKey = ctxSelection[1];
+                makeDeleteDialog().show();
+            } else {
+                mViewPager.setCurrentItem(2);
+                selectedFragment.updateFragment(dataMap.get(ctxSelection[1]), false);
+                pagerAdapter.notifyDataSetChanged();
+            }
+
+        }
+
+        if (ctxSelection[0].equalsIgnoreCase(ARG_DEFS_TITLE)) {
+
+           if (delete) {
+               for (Entry<String, String> entry : dataMap.entrySet()) {
+                   if (entry.getValue().equalsIgnoreCase(ctxSelection[1])) {
+                       delKey = entry.getKey();
+                   }
+               }
+
+               if (delKey != null) {
+                   makeDeleteDialog().show();
+               }
+
+            } else {
+               //Log.i("TEST", "onItemClick: DEFINITION !"+selectInfos[1]);
+               mViewPager.setCurrentItem(2);
+               String key = "";
+               for (Entry<String, String> entry : dataMap.entrySet()) {
+                   if (entry.getValue().equalsIgnoreCase(ctxSelection[1])) {
+                       key = entry.getKey();
+                   }
+               }
+               selectedFragment.updateFragment(key, true);
+               pagerAdapter.notifyDataSetChanged();
+            }
+
         }
     }
 

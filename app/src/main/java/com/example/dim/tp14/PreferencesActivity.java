@@ -11,13 +11,15 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.dim.tp14.utils.AppCompatPreferenceActivity;
 
 import java.util.List;
 import java.util.Locale;
+
+// TODO:preferences checkbox without label
+// TODO: fix some issue with preferences actionbar return arrow
 
 public class PreferencesActivity extends AppCompatPreferenceActivity {
 
@@ -35,7 +37,6 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
             String stringValue = value.toString();
             // set preference summary
             preference.setSummary(stringValue);
-
 
             return true;
         }
@@ -65,20 +66,16 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
-
-        Log.i("TEST", "onCreate: " + Locale.getDefault().getDisplayLanguage());
+// init local only once
         String pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
                 .getString("lang", "fr");
-        Log.i("TEST", "onCreate: " + pref);
-        // init local only once
+
         if (!Locale.getDefault().getDisplayLanguage().toLowerCase().contains(pref)) {
             initLocale(pref.contains("fr") ? Locale.FRENCH // french
                     : pref.contains("en") ? Locale.ENGLISH // english
                     : Locale.FRENCH); // default
         }
-        //langFR = false;
 
-       // baseContext = getBaseContext();
     }
 
     private void initLocale(Locale french) {
@@ -160,7 +157,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_lang);
-            setHasOptionsMenu(true);
+            setHasOptionsMenu(false);
 
             // summary binding
             bindPreferenceSummaryToValue(findPreference("lang"));
@@ -178,6 +175,13 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
                         return true;
                     }
                     return false;
+                }
+            });
+
+            findPreference("adn").setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object o) {
+                        return true;
                 }
             });
         }
