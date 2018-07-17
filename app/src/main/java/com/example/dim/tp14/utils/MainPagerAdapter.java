@@ -15,11 +15,13 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
 
     private boolean delMod;
     private HashMap<Integer, Fragment> fragments;
+    private String[] titles;
 
-    public MainPagerAdapter(FragmentManager fm, HashMap<Integer, Fragment> fragments) {
+    public MainPagerAdapter(FragmentManager fm, HashMap<Integer, Fragment> fragments, String[] titles) {
         super(fm);
         this.fragments = fragments;
         delMod = false;
+        this.titles = titles;
     }
 
 
@@ -70,9 +72,8 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return position == 0 ? "Mots" :
-                position == 1 ? "Definition" :
-                        "Selection";
+
+        return titles[position];
     }
 
     public boolean isDelMod() {

@@ -3,7 +3,7 @@
     <string name="drawer_title">TP-14 Les menus</string>
     <string name="app_name">TP14</string>
     <string name="dict_entry_name">Creation</string>
-    <string name="action_settings">Préférences</string>
+    <string name="action_settings">préférence</string>
     <string name="nav_drawer_open">Ouvert</string>
     <string name="nav_drawer_close">Fermé</string>
     <string name="cancel">Annuler</string>
@@ -11,9 +11,9 @@
     <string name="dialog_title_quit">QUITTER</string>
     <string name="dialog_message_quit">Etes-vous sûr de voulour quitter ?</string>
     <string name="dialog_title_del">SUPPRIMER</string>
-    <string name="dialog_message_del">Etes-vous sûr de voulour supprimer l\'element  </string>
+    <string name="dialog_message_del">Etes-vous sûr de voulour supprimer l\'element</string>
     <string name="dialog_title_add">AJOUTER</string>
-    <string name="dialog_message_save">Ajouter un élément au dictionnaire ?</string>
+    <string name="dialog_message_save">Ajuter un élément au dictionnaire ?</string>
     <string name="word">Mot</string>
     <string name="dictionnary">Dictionnaire</string>
     <string name="deletion">Suppression</string>
@@ -23,10 +23,7 @@
     <string name="save">Enregistrer</string>
     <string name="preferences_lang">Langage</string>
     <string name="preferences_lang_sum">Séléctionnez entre Français et Anglais. Changer vous redirigera sur la page d\'acceuil.</string>
-
-    <!-- Strings related to Settings -->
-    <!-- Language -->
-    <string name="pref_file_key">com.example.dim.tp14_preferences</string>
+    <string name="pref_file_key">private_app_prefs</string>
     <string name="selecion_title">Selection</string>
     <string name="words_title">Mots</string>
     <string name="defs_title">Definitions</string>

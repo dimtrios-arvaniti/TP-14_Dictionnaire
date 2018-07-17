@@ -4,7 +4,10 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
@@ -39,6 +42,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
@@ -70,6 +74,19 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Log.i("TEST", "onCreate: " + Locale.getDefault().getDisplayLanguage());
+        String pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                .getString("lang", "fr");
+        Log.i("TEST", "onCreate: " + pref);
+        // init local only once
+        if (!Locale.getDefault().getDisplayLanguage().toLowerCase().contains(pref)) {
+            initLocale(pref.contains("fr") ? Locale.FRENCH // french
+                    : pref.contains("en") ? Locale.ENGLISH // english
+                    : Locale.FRENCH); // default
+        }
+
+
         // toolbar & menu
         Toolbar toolbar = initToolbar();
         initDrawerMenu(toolbar);
@@ -85,11 +102,16 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
 
         // view pager
         initViewPager();
+
+
     }
 
     // setting view pager and view pager adapter
     private void initViewPager() {
-        pagerAdapter = new MainPagerAdapter(getSupportFragmentManager(), fragments);
+        String[] titles = new String[]{getResources().getString(R.string.words_title),
+                getResources().getString(R.string.defs_title),
+                getResources().getString(R.string.selecion_title)};
+        pagerAdapter = new MainPagerAdapter(getSupportFragmentManager(), fragments, titles);
 
         mViewPager = findViewById(R.id.view_pager);
         mViewPager.setAdapter(pagerAdapter);
@@ -99,6 +121,24 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
         PagerTitleStrip titleStrip = findViewById(R.id.view_pager_strip);
         titleStrip.setTextColor(getResources().getColor(R.color.White));
         titleStrip.setBackgroundColor(getResources().getColor(R.color.myPrimaryDarkColor));
+    }
+
+    private void initLocale(Locale french) {
+        Configuration config = getResources().getConfiguration();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            config.setLocale(french);
+        } else {
+            config.locale = french;
+        }
+
+        // update
+        getBaseContext().getResources().updateConfiguration(config,
+                getBaseContext().getResources().getDisplayMetrics());
+
+        Intent intent = new Intent(MainActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void initFragments() {
@@ -217,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
             getSupportActionBar().setTitle(R.string.dictionnary);
         } else {
             if (curentPage > 0) {
-                curentPage -=1;
+                curentPage -= 1;
                 mViewPager.setCurrentItem(curentPage);
                 pagerAdapter.notifyDataSetChanged();
             } else {
@@ -292,12 +332,12 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
         return new Builder(new ContextThemeWrapper(MainActivity.this,
                 R.style.AppTheme_Dialog))
                 .setTitle(R.string.dialog_title_quit)
-                .setMessage(R.string.dialog_message_del)
+                .setMessage(R.string.dialog_message_quit)
                 .setNegativeButton(R.string.cancel, null)
                 .setPositiveButton(R.string.confirm, new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                       // start clean activity
+                        // start clean activity
                         Intent intent = new Intent(Intent.ACTION_MAIN);
                         intent.addCategory(Intent.CATEGORY_HOME);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -342,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
                             // ending
                             fileWriter.flush();
                             fileWriter.close();
-                        }catch (IOException e){
+                        } catch (IOException e) {
                             Log.e("IOEXCEPTION", "onClick: ", e);
                         }
 
@@ -352,7 +392,6 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
                     }
                 }).create();
     }
-
 
 
     private Toolbar initToolbar() {
@@ -380,7 +419,8 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-
+            Intent intent = new Intent(MainActivity.this, PreferencesActivity.class);
+            startActivity(intent);
             return true;
         }
 
@@ -404,7 +444,7 @@ public class MainActivity extends AppCompatActivity implements TabListActionInte
         String[] selectInfos = item.split("_");
 
         if (selectInfos[0].equalsIgnoreCase(ARG_MOTS_TITLE)) {
-            if (pagerAdapter.isDelMod()){
+            if (pagerAdapter.isDelMod()) {
                 delKey = selectInfos[1];
                 makeDeleteDialog().show();
             } else {
